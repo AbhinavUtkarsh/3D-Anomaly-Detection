@@ -130,7 +130,7 @@ dmypy.json
 
 # Datasets directory 
 tad/data/datasets/
-datasets/
+datasets/*
 
 #output directories 
 output/
