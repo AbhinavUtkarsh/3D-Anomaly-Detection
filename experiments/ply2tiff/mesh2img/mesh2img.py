@@ -11,7 +11,7 @@ There's a lot of command line arguments but there's still probably a lot of thin
 script on the command line as-is. I've tried to comment this script to be easy to change to suit your purposes.
 
 :copyright: 2016 by Phillip Stromberg
-:license:   MIT
+:license:   MIT  
 
 """
 #to run the program for now type "blender -b -P mesh2img.py -- --paths C:\first_try --dimensions 1080 -x 7" in the cmd
