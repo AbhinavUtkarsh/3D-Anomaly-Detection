@@ -1,5 +1,5 @@
 data_dir=./../datasets/Real_AD_3D/
-save_dir=./../datasets/Real_AD_3D_multiview
+save_dir=./../datasets/Real_AD_3D_multiview/
 export DISPLAY=:0
 cd utils
 

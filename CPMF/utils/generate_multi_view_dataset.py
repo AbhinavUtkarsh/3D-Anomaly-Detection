@@ -1,10 +1,6 @@
 import os
 import numpy as np
-import tifffile as tiff
 import open3d as o3d
-from pathlib import Path
-from PIL import Image
-import math
 import mvtec3d_util as mvt_util
 import argparse
 import render_utils
@@ -110,24 +106,8 @@ if __name__ == '__main__':
     # NOTE: You should run the preprocessing.py first
 
     args = parser.parse_args()
-    #
-    # mvtec3d_classes = [
-    #     "bagel",
-    #     "cable_gland",
-    #     "carrot",
-    #     "cookie",
-    #     "dowel",
-    #     "foam",
-    #     "peach",
-    #     "potato",
-    #     "rope",
-    #     "tire",
-    # ]
+
     name = args.category
-    #
-    # mvtec3d_classes = [
-    #     "bagel"
-    # ]
 
     color_option_dict = {'X':render_utils.MultiViewRender.COLOR_X,
                          'Y': render_utils.MultiViewRender.COLOR_Y,
@@ -142,14 +122,13 @@ if __name__ == '__main__':
     color_option = color_option_dict[args.color_option]
     save_dir = args.save_dir
 
-    split = ['train', 'test']
+    split = ['train', 'val', 'test']
 
     processed_number = 0
     # parameter_path = os.path.join(dataset_path, name, 'calibration', 'camera_parameters.json')
     multi_view_vis = render_utils.MultiViewRender('', color=color_option)
 
-
-    print(f'processing {name}...')
+    print(f'processing {name} class ...')
 
     time_begin = time.time()
     for s in split:
@@ -172,5 +151,3 @@ if __name__ == '__main__':
                 if processed_number % 50 == 0:
                     cur_time = time.time()
                     print(f"Processed {processed_number} tiff files... using {cur_time - time_begin:.2f} s...")
-
-
