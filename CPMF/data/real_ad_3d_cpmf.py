@@ -5,23 +5,19 @@ from PIL import Image
 from torchvision import transforms
 import glob
 from torch.utils.data import Dataset
-from utils.mvtec3d_util import *
+from CPMF.utils.real_ad_3d_util import *
 from torch.utils.data import DataLoader
 import numpy as np
 
 
-def mvtec3d_classes():
+def real_AD_3D_classes():
     return [
-        "bagel",
-        "cable_gland",
-        "carrot",
-        "cookie",
-        "dowel",
-        "foam",
-        "peach",
-        "potato",
-        "rope",
-        "tire",
+        "airplane",
+        "candybar",
+        "car",
+        "chicken",
+        "diamond",
+        "duck",
     ]
 
 
@@ -29,7 +25,7 @@ IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD = [0.229, 0.224, 0.225]
 
 
-class MultiViewMVTec3D(Dataset):
+class MultiViewReal_AD_3D(Dataset):
 
     def __init__(self, split, class_name, img_size, dataset_path):
         self.IMAGENET_MEAN = IMAGENET_MEAN
@@ -128,9 +124,12 @@ class MultiViewMVTec3D(Dataset):
 
 # split, class_name, img_size, dataset_path
 def get_data_loader(split, class_name, img_size, dataset_path, batch_size=1):
-    dataset = MultiViewMVTec3D(split=split, class_name=class_name, img_size=img_size, dataset_path=dataset_path)
+    dataset = MultiViewReal_AD_3D(split=split, class_name=class_name, img_size=img_size, dataset_path=dataset_path)
     if split in ['train']:
         data_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True, num_workers=1, drop_last=False,
+                                 pin_memory=True)
+    elif split in ['val']:
+        data_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=False, num_workers=1, drop_last=False,
                                  pin_memory=True)
     elif split in ['test']:
         data_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=False, num_workers=1, drop_last=False,

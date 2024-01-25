@@ -1,11 +1,11 @@
 import os
 from utils.csv_utils import write_results
-from data.mvtec3d_cpmf import get_data_loader
+from data.real_ad_3d_cpmf import get_data_loader
 import torch
 from tqdm import tqdm
 from feature_extractors.cpmf_features import CPMF_Features
 import pandas as pd
-from data.mvtec3d_cpmf import mvtec3d_classes
+from data.real_ad_3d_cpmf import real_AD_3D_classes
 
 class MultiViewPatchCore():
     def __init__(self, backbone_name, dataset_path, n_views, no_fpfh, class_name, root_dir, exp_name, plot_use_rgb, image_size=224):
@@ -52,4 +52,4 @@ class MultiViewPatchCore():
         results['p_roc'] = pixel_rocauc * 100
         results['p_pro'] = au_pro * 100
 
-        write_results(results, self.class_name, mvtec3d_classes(), self.csv_path)
+        write_results(results, self.class_name, real_AD_3D_classes(), self.csv_path)

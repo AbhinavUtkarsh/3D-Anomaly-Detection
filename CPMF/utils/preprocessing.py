@@ -3,7 +3,7 @@ import numpy as np
 import tifffile as tiff
 from pathlib import Path
 from PIL import Image
-import mvtec3d_util as mvt_util
+import real_ad_3d_util as mvt_util
 import argparse
 
 

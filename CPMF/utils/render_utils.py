@@ -3,7 +3,7 @@ import os
 import cv2
 import numpy as np
 import open3d as o3d
-import mvtec3d_util as mvt_util
+import real_ad_3d_util as mvt_util
 import json
 from sklearn.decomposition import PCA
 

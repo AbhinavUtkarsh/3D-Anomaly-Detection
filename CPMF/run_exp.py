@@ -1,10 +1,10 @@
 import os
-from data.mvtec3d_cpmf import mvtec3d_classes
+from data.real_ad_3d_cpmf import real_AD_3D_classes
 from multiprocessing import Pool
 
 
 if __name__ == "__main__":
-    classes = mvtec3d_classes()
+    classes = real_AD_3D_classes()
 
     color_options = 'UNIFORM'
     data_path = '../datasets/mvtec3d_multi_view'

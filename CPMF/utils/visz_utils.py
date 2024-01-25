@@ -7,7 +7,7 @@ import numpy as np
 import os
 import seaborn as sns
 import open3d as o3d
-import utils.mvtec3d_util as mvt_util
+import CPMF.utils.real_ad_3d_util as mvt_util
 ##
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
