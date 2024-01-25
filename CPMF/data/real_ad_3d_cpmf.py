@@ -5,7 +5,7 @@ from PIL import Image
 from torchvision import transforms
 import glob
 from torch.utils.data import Dataset
-from CPMF.utils.real_ad_3d_util import *
+from utils.real_ad_3d_util import *
 from torch.utils.data import DataLoader
 import numpy as np
 

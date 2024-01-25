@@ -7,7 +7,7 @@ if __name__ == "__main__":
     classes = real_AD_3D_classes()
 
     color_options = 'UNIFORM'
-    data_path = '../datasets/mvtec3d_multi_view'
+    data_path = '../datasets/real_ad_3d_multi_view'
 
     n_processes = len(data_path)
     pool = Pool(processes=1)
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # n_views = [1, 3, 6, 9, 12, 15, 18, 21, 24, 27]
     n_views = [27]
 
-    backbone_names = ['resnet_18']
+    backbone_names = ['resnet18', 'pit_s_224', 'swin_s3_small_224']
 
     no_fpfh_list = [False, True]
 

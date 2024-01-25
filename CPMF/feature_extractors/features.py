@@ -3,16 +3,16 @@ PatchCore logic based on https://github.com/rvorias/ind_knn_ad
 """
 
 from sklearn import random_projection
-from CPMF.utils.utils import KNNGaussianBlur
-from CPMF.utils.utils import set_seeds
+from utils.utils import KNNGaussianBlur
+from utils.utils import set_seeds
 import numpy as np
 from sklearn.metrics import roc_auc_score
 import timm
 import torch
 from tqdm import tqdm
-from CPMF.utils.au_pro_util import calculate_au_pro
-from CPMF.data.real_ad_3d_cpmf import denormalization
-from CPMF.utils.visz_utils import *
+from utils.au_pro_util import calculate_au_pro
+from data.real_ad_3d_cpmf import denormalization
+from utils.visz_utils import *
 
 class Dict(dict):
     __setattr__ = dict.__setitem__
@@ -184,14 +184,14 @@ class Features(torch.nn.Module):
 
 class ModelINet(torch.nn.Module):
     # hrnet_w32, wide_resnet50_2
-    def __init__(self, device, backbone_name='wide_resnet50_2', out_indices=(1, 2, 3), checkpoint_path='',
+    def __init__(self, device, backbone_name='pit_s_224', out_indices=(1, 2, 3), checkpoint_path='',
                  pool_last=False):
         super().__init__()
         # Determine if to output features.
         kwargs = {'features_only': True if out_indices else False}
         if out_indices:
             kwargs.update({'out_indices': out_indices})
-        print(backbone_name)
+        print("Using backbone: ", backbone_name)
         self.backbone = timm.create_model(model_name=backbone_name, pretrained=True, checkpoint_path=checkpoint_path,
                                           **kwargs)
         self.backbone.eval()

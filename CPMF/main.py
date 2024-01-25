@@ -28,14 +28,14 @@ def str2bool(v):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--data-path', type=str, default='../datasets/multi_view_uniform_mvtec_3d_anomaly_detection')
+    parser.add_argument('--data-path', type=str, default='../datasets/Real_AD_3D_multiview')
     parser.add_argument('--n-views', type=int, default=1)
     parser.add_argument('--no-fpfh', type=str2bool, default=False)
     parser.add_argument('--use-rgb', type=str2bool, default=False)
     parser.add_argument('--exp-name', type=str, default='default')
-    parser.add_argument('--category', type=str, default='bagel')
+    parser.add_argument('--category', type=str, default='diamond')
     parser.add_argument('--root-dir', type=str, default='./results')
-    parser.add_argument('--backbone', type=str, default='resnet18')
+    parser.add_argument('--backbone', type=str, default='pit_s_224')
     parser.add_argument('--draw', type=str2bool, default=False)
 
     args = parser.parse_args()

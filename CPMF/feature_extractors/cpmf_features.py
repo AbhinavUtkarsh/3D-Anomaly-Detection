@@ -1,8 +1,8 @@
 import torch
-from CPMF.feature_extractors.features import Features
-from CPMF.data.real_ad_3d_cpmf import unorganized_data_to_organized, denormalization
+from feature_extractors.features import Features
+from data.real_ad_3d_cpmf import unorganized_data_to_organized, denormalization
 from torch.nn import functional as F
-from CPMF.utils.real_ad_3d_util import organized_pc_to_unorganized_pc
+from utils.real_ad_3d_util import organized_pc_to_unorganized_pc
 import numpy as np
 
 class CPMF_Features(Features):
