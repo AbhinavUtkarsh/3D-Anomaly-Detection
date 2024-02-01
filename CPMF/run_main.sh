@@ -10,5 +10,5 @@ exp_name="Testrun"
 # run with Swin Transformer backbone
 # python main.py --category  diamond --n-views 27 --no-fpfh False --data-path $data_dir --exp-name $exp_name --backbone swin_s3_small_224
 
-# run with ResNet backbone
+# run with NasNet large backbone
 python main.py --category  diamond --n-views 27 --no-fpfh False --data-path $data_dir --exp-name $exp_name --backbone nasnetalarge
