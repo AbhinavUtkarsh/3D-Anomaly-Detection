@@ -131,6 +131,7 @@ dmypy.json
 # Datasets directory 
 tad/data/datasets/
 datasets/*
+checkpoint_pointnet2/*
 
 #output directories 
 output/

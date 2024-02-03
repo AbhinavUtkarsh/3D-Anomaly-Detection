@@ -42,6 +42,9 @@ def preprocess_pc(multi_view_vis:render_utils.MultiViewRender, tiff_path, root_p
     _224_pcd, _224_rgb, _224_nonezero_rgb = get_specific_resolution_pcd_rgb(organized_pc, rgb_image, width=224, height=224)
     _ori_reso_pcd, _ori_reso_rgb, _ori_nonezero_rgb = get_specific_resolution_pcd_rgb(organized_pc, rgb_image, rgb_image.shape[0], rgb_image.shape[1])
 
+    # from open3d points to numpy points
+    numpy_points = np.asarray(_224_pcd.points)
+
     # voxel_size = 0.05
     # radius_normal = voxel_size * 2
     # _ori_reso_pcd.estimate_normals(o3d.geometry.KDTreeSearchParamHybrid(radius=radius_normal, max_nn=30))
@@ -59,7 +62,6 @@ def preprocess_pc(multi_view_vis:render_utils.MultiViewRender, tiff_path, root_p
     save_xyz_root = os.path.join(tiff_spilt[0], tiff_spilt[1][:-5])
 
     save_xyz_path = os.path.join(save_xyz_root, 'xyz.tiff')
-
     # MAKE DIRS
     os.makedirs(save_xyz_root, exist_ok=True)
     os.makedirs(save_rgb_root, exist_ok=True)
@@ -77,8 +79,12 @@ def preprocess_pc(multi_view_vis:render_utils.MultiViewRender, tiff_path, root_p
     shutil.copy(tiff_path, save_xyz_path)
 
     # save render results, points, and fpfh features
-    np.save(os.path.join(save_xyz_root, 'fpfh.npy'), fpfh)
-
+    np.save(os.path.join(save_xyz_root, 'fpfh.npy'), fpfh)     
+    # Define the save path for the NumPy array
+    save_pcd_path = os.path.join(save_xyz_root, '224_pcd.npy')
+    # Save the NumPy array
+    np.save(save_pcd_path, numpy_points)
+    
     for idx, (image, point) in enumerate(zip(images, points)):
 
         # for visualization, check whether we get right results
@@ -93,14 +99,14 @@ def preprocess_pc(multi_view_vis:render_utils.MultiViewRender, tiff_path, root_p
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Preprocess MVTec 3D-AD')
     parser.add_argument('--dataset_path', type=str,
-                        default='../../datasets/mvtec_3d',
+                        default='../datasets/Real_AD_3D/',
                         help='The root path of the MVTec 3D-AD. The preprocessing is done inplace (i.e. the preprocessed dataset overrides the existing one)')
     parser.add_argument('--color-option', type=str,
                         default='UNIFORM', choices=['X', 'Y', 'Z', 'NORM', 'FPFH','UNIFORM','RGB'],
                         help='in [X,Y,Z,NORM,FPFH]')
-    parser.add_argument('--category', type=str, default='bagel')
+    parser.add_argument('--category', type=str, default='diamond')
     parser.add_argument('--save-dir', type=str,
-                        default='../../datasets/mvtec_3d_multi_view',
+                        default='../datasets/Real_AD_3D_multi_view/',
                         help='The save path for the generated multi-view-mvtec3d dataset')
 
     # NOTE: You should run the preprocessing.py first
