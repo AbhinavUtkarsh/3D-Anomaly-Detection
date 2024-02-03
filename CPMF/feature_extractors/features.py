@@ -28,8 +28,7 @@ def dict_to_object(dictObj):
     return inst
 
 class Features(torch.nn.Module):
-    # wide_resnet50_2
-    def __init__(self, image_size=224, f_coreset=0.1, coreset_eps=0.9, backbone_name='resnet18'):
+    def __init__(self, image_size=224, f_coreset=0.1, coreset_eps=0.9, backbone_name='nesnetalarge'):
         super().__init__()
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -183,8 +182,7 @@ class Features(torch.nn.Module):
         return torch.stack(coreset_idx)
 
 class ModelINet(torch.nn.Module):
-    # hrnet_w32, wide_resnet50_2
-    def __init__(self, device, backbone_name='pit_s_224', out_indices=(1, 2, 3), checkpoint_path='',
+    def __init__(self, device, backbone_name='nesnetalarge', out_indices=(1, 2, 3), checkpoint_path='',
                  pool_last=False):
         super().__init__()
         # Determine if to output features.
