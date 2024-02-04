@@ -20,13 +20,13 @@ class encoder_BN_2(nn.Module):
         self.sa2 = PointNetSetAbstractionMsg(128, [0.2, 0.4, 0.8], [32, 64, 128], 320,[[64, 64, 128], [128, 128, 256], [128, 128, 256]])
         self.sa3 = PointNetSetAbstraction(None, None, None, 640 + 3, [256, 512, 1024], True)
         self.fc1 = nn.Linear(1024, 512)
-        self.bn1 = nn.InstanceNorm1d(512)
+        self.bn1 = nn.BatchNorm1d(512)
         #self.drop1 = nn.Dropout(0.4)
         self.fc2 = nn.Linear(512, 256)
-        self.bn2 = nn.InstanceNorm1d(256)
+        self.bn2 = nn.BatchNorm1d(256)
         #self.drop2 = nn.Dropout(0.5)
         self.fc3 = nn.Linear(256, num_class)
-        self.bn3 = nn.InstanceNorm1d(num_class)
+        self.bn3 = nn.BatchNorm1d(num_class)
 
     def forward(self, xyz):
         B, _, _ = xyz.shape
@@ -55,11 +55,11 @@ class encoder_BN(nn.Module):
         self.fc2 = nn.Linear(512, 128)
         
         self.relu = nn.ReLU()
-        self.bn1 = nn.InstanceNorm1d(64)
-        self.bn2 = nn.InstanceNorm1d(128)
-        self.bn3 = nn.InstanceNorm1d(1024)
-        self.bn4 = nn.InstanceNorm1d(512)
-        self.bn5 = nn.InstanceNorm1d(128)
+        self.bn1 = nn.BatchNorm1d(64)
+        self.bn2 = nn.BatchNorm1d(128)
+        self.bn3 = nn.BatchNorm1d(1024)
+        self.bn4 = nn.BatchNorm1d(512)
+        self.bn5 = nn.BatchNorm1d(128)
 
     def forward(self, x):
        
