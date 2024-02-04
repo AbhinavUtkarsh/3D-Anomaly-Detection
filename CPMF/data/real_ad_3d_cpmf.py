@@ -24,6 +24,23 @@ def real_AD_3D_classes():
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD = [0.229, 0.224, 0.225]
 
+def normal_points(ps_gt, translation=False): 
+    tt =  0
+    if((np.max(ps_gt[:,0])-np.min(ps_gt[:,0]))>(np.max(ps_gt[:,1])-np.min(ps_gt[:,1]))):
+        tt = (np.max(ps_gt[:,0])-np.min(ps_gt[:,0]))
+    else:
+        tt = (np.max(ps_gt[:,1])-np.min(ps_gt[:,1]))
+    if(tt < (np.max(ps_gt[:,2])-np.min(ps_gt[:,2]))):
+        tt = (np.max(ps_gt[:,2])-np.min(ps_gt[:,2]))
+     
+    tt = 10/(10*tt)
+    ps_gt = ps_gt*tt
+
+    if(translation):
+        t = np.mean(ps_gt,axis = 0)
+        ps_gt = ps_gt - t
+
+    return ps_gt, (t , tt)
 
 class MultiViewReal_AD_3D(Dataset):
 
@@ -89,7 +106,7 @@ class MultiViewReal_AD_3D(Dataset):
 
         img = self.rgb_transform(img)
         # tiff中，三通道分别代表xyz的数值
-        resized_organized_pc, features, view_images, view_positions = self.read_xyz(xyz_root)
+        resized_organized_pc, features, view_images, view_positions, _224_pcd = self.read_xyz(xyz_root)
 
         if gt == 0:
             gt = torch.zeros(
@@ -99,13 +116,14 @@ class MultiViewReal_AD_3D(Dataset):
             gt = self.gt_transform(gt)
             gt = torch.where(gt > 0.5, 1., .0)
 
-        return (img, resized_organized_pc, features, view_images, view_positions), gt[:1], label
+        return (img, resized_organized_pc, features, view_images, view_positions, _224_pcd), gt[:1], label
 
 
     def read_xyz(self, xyz_root):
         # fpfh.npy
         # view_x.png, view_x.npy
         # xyz.tiff
+        # 224_pcd.npy
         features = np.load(os.path.join(xyz_root, 'fpfh.npy'))
         organized_pc = read_tiff_organized_pc(os.path.join(xyz_root, 'xyz.tiff'))
 
@@ -119,8 +137,9 @@ class MultiViewReal_AD_3D(Dataset):
         view_positions = [np.load(position_path) for position_path in view_position_paths]
 
         resized_organized_pc = resize_organized_pc(organized_pc)
-
-        return resized_organized_pc, features, view_images, view_positions
+        _224_pcd = np.load(os.path.join(xyz_root, '224_pcd.npy'))
+        _224_pcd, _ = normal_points(_224_pcd, True)
+        return resized_organized_pc, features, view_images, view_positions,_224_pcd
 
 # split, class_name, img_size, dataset_path
 def get_data_loader(split, class_name, img_size, dataset_path, batch_size=1):
@@ -154,16 +173,18 @@ def unorganized_data_to_organized(organized_pc, none_zero_data_list):
         none_zero_data_list = [none_zero_data_list]
 
     for idx in range(len(none_zero_data_list)):
-        none_zero_data_list[idx] = none_zero_data_list[idx].squeeze().numpy()
+        none_zero_data_list[idx] = none_zero_data_list[idx].squeeze()
 
-    organized_pc_np = organized_pc.squeeze().permute(1, 2, 0).numpy() # H W (x,y,z)
+    organized_pc_np = organized_pc.squeeze().permute(1, 2, 0) # H W (x,y,z)
     unorganized_pc = organized_pc_to_unorganized_pc(organized_pc=organized_pc_np)
-    nonzero_indices = np.nonzero(np.all(unorganized_pc != 0, axis=1))[0]
+    #nonzero_indices = np.nonzero(np.all(unorganized_pc != 0, axis=1))[0]
+    nonzero_indices = (unorganized_pc != 0).all(axis=1).nonzero(as_tuple=True)[0]
+
 
     full_data_list = []
 
     for none_zero_data in none_zero_data_list:
-        full_data = np.zeros((unorganized_pc.shape[0], none_zero_data.shape[1]), dtype=none_zero_data.dtype)
+        full_data = torch.zeros(unorganized_pc.shape[0], none_zero_data.shape[1], dtype=none_zero_data.dtype)
         full_data[nonzero_indices, :] = none_zero_data
         full_data_reshaped = full_data.reshape((organized_pc_np.shape[0], organized_pc_np.shape[1], none_zero_data.shape[1]))
         full_data_tensor = torch.tensor(full_data_reshaped).permute(2, 0, 1).unsqueeze(dim=0)

@@ -20,7 +20,6 @@ def sample_query_points_entire_pc(target_point_clouds):
 
 
     target_point_clouds = target_point_clouds.squeeze()
-
     sample = []
     pnts = target_point_clouds
     ptree = cKDTree(pnts)

@@ -12,7 +12,7 @@ from six.moves import cPickle
 from utils.utils import *
 from model.model import SDF_Model
 from data.data import get_train_data_loader,sample_query_points_entire_pc
-
+from model.pointnet_util import sample_and_group
 
 
 def object_to_str(parameter):
@@ -82,7 +82,7 @@ if not osp.exists(checkpoint_path):
 save(hyperparameters,os.path.join(checkpoint_path, "Congiguration"))
     
 class Training():
-    def __init__(self, hyperparameter, class_):
+    def __init__(self, hyperparameter, class_,point_net_backbone="pointnet"):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         # fetching hyperparameters
         self.batch_size = hyperparameters["batch_size"]
@@ -94,10 +94,10 @@ class Training():
         self.curr_class_ = class_
         
         # Initializing pointnet2 model
-        self.sdf_model = SDF_Model().to(self.device)
+        self.sdf_model = SDF_Model(point_net_backbone).to(self.device)
         self.optimizer = optim.Adam(self.sdf_model.parameters(), lr=learning_rate, betas=(0.9, 0.999))
         
-        
+
     def train(self, train_dataloader):
         # Open the log file once and keep it open during training
         with open(osp.join(self.checkpoint_path, "train_states.txt"), "a", 1) as log_train_file:
@@ -111,16 +111,16 @@ class Training():
                     points = points[0]
 
                     torch_points = points.to(torch.float32).cuda()
-
+                    patches = sample_and_group(torch_points, npoint = 64, nsample = 500)
+                    patches = patches.squeeze(0)
                     # First, ensure the tensor is moved to the CPU before converting it to a NumPy array
                     noisy_points = sample_query_points_entire_pc(torch_points.cpu().numpy())    
                     
                     # Then, you can convert the noisy_points back to a PyTorch tensor and move it to the CUDA device
                     noisy_points = torch.from_numpy(noisy_points).to(torch.float32).cuda()
-                    # Model forward pass and loss calculation
-                    noisy_points = noisy_points.unsqueeze(0)
                     
-                    point_feature, g_point = self.sdf_model(torch_points,noisy_points)
+                    noisy_points = noisy_points.unsqueeze(0)
+                    point_feature, g_point = self.sdf_model(patches,noisy_points)
 
                     loss = torch.linalg.norm((torch_points - g_point), ord=2, dim=-1).mean()
 
@@ -150,12 +150,31 @@ class Training():
         torch.save(checkpoint, os.path.join(self.checkpoint_path, 'checkpoint_{}_{}.pth'.format(self.curr_class_,self.current_iteration)))
         
     def load_checkpoint(self, checkpoint_name):
-        print("*** Loading Checkpoint: ",print(os.path.join(self.checkpoint_path, 'checkpoints', checkpoint_name)))
-        checkpoint = torch.load(os.path.join(self.checkpoint_path, 'checkpoints', checkpoint_name), map_location=self.device)
+        print("*** Loading Checkpoint: ",checkpoint_name)
+        checkpoint = torch.load(checkpoint_name, map_location=self.device)
         self.sdf_model.load_state_dict(checkpoint['sdf_model'])
         self.current_iteration = checkpoint['current_iteration']
-        
-
+    
+    def get_features_add_sample(self, points):
+        noisy_points = sample_query_points_entire_pc(points)
+        noisy_points = torch.from_numpy(noisy_points).to(torch.float32)
+        noisy_points = noisy_points.unsqueeze(0)
+        points = points.to('cuda')
+        noisy_points = noisy_points.to('cuda')
+        point_feature, g_point = self.sdf_model(points, noisy_points)
+        point_feature = point_feature.squeeze(0)
+        return point_feature
+    
+    def get_features_predict(self, points):
+        noisy_points = sample_query_points_entire_pc(points)
+        noisy_points = torch.from_numpy(noisy_points).to(torch.float32)
+        noisy_points = noisy_points.unsqueeze(0)
+        points = points.to('cuda')
+        noisy_points = noisy_points.to('cuda')
+        point_feature = self.sdf_model.predict(points, noisy_points)
+        point_feature = point_feature.squeeze(0)
+        return point_feature
+    
 if __name__ == "__main__":
     print(" *** Training the 3D model *** ")
     print(" *** Hyperparameters *** ")

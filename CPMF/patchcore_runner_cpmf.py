@@ -6,9 +6,10 @@ from tqdm import tqdm
 from feature_extractors.cpmf_features import CPMF_Features
 import pandas as pd
 from data.real_ad_3d_cpmf import real_AD_3D_classes
+from train import Training, hyperparameters
 
 class MultiViewPatchCore():
-    def __init__(self, backbone_name, dataset_path, n_views, no_fpfh, class_name, root_dir, exp_name, plot_use_rgb, image_size=224):
+    def __init__(self, backbone_name, dataset_path, n_views, no_fpfh, point_net_backbone, class_name, root_dir, exp_name, plot_use_rgb, image_size=224):
         self.image_size = image_size
         self.dataset_path = dataset_path
         self.method = CPMF_Features(n_views=n_views, no_fpfh=no_fpfh, backbone_name=backbone_name)
@@ -17,25 +18,35 @@ class MultiViewPatchCore():
         self.csv_dir = os.path.join(root_dir, "csv")
         self.csv_path = os.path.join(self.csv_dir, f'{exp_name}.csv')
         self.plot_use_rgb = plot_use_rgb
+        if point_net_backbone is not None:
+            self.model = Training(hyperparameters, class_name,point_net_backbone=point_net_backbone)
+        else:
+            self.model = None
 
         os.makedirs(self.image_dir, exist_ok=True)
         os.makedirs(self.csv_dir, exist_ok=True)
 
-    def fit(self):
+    def fit(self,checkpoint_name): 
+        print("checkpoint_name: ",checkpoint_name)    
         class_name = self.class_name
+
+        self.model.load_checkpoint(checkpoint_name)
+
         train_loader = get_data_loader("train", class_name=class_name, img_size=self.image_size, dataset_path=self.dataset_path)
         for sample, _, _ in tqdm(train_loader, desc=f'Extracting train features for class {class_name}'):
 
-            self.method.add_sample_to_mem_bank(sample)
+            self.method.add_sample_to_mem_bank(sample, self.model)
 
         self.method.run_coreset()
 
-    def evaluate(self, draw=False):
+    def evaluate(self, checkpoint_name, draw=False):
         class_name = self.class_name
+
+        self.model.load_checkpoint(checkpoint_name)
         test_loader = get_data_loader("test", class_name=class_name, img_size=self.image_size, dataset_path=self.dataset_path)
         with torch.no_grad():
             for sample, mask, label in tqdm(test_loader, desc=f'Extracting test features for class {class_name}'):
-                self.method.predict(sample, mask, label)
+                self.method.predict(sample, mask, label, self.model)
 
         if draw:
             self.method.draw_anomaly_map(self.image_dir, self.class_name, self.plot_use_rgb)

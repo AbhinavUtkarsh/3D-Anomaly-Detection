@@ -5,12 +5,45 @@ from ptflops import get_model_complexity_info
 import torch.nn.functional as F
 import torch.nn as nn
 from model.pointnet_util import *
+from model.pointnet2_utils import PointNetSetAbstractionMsg, PointNetSetAbstraction
 
 
 def pytorch_safe_norm(x, epsilon=1e-12, axis=None):
     return torch.sqrt(torch.sum(x ** 2, axis=axis) + epsilon)
 
-# normal encoder with BN
+class encoder_BN_2(nn.Module):
+    def __init__(self,num_class = 128,normal_channel=False):
+        super(encoder_BN, self).__init__()
+        in_channel = 3 if normal_channel else 0
+        self.normal_channel = normal_channel
+        self.sa1 = PointNetSetAbstractionMsg(512, [0.1, 0.2, 0.4], [16, 32, 128], in_channel,[[32, 32, 64], [64, 64, 128], [64, 96, 128]])
+        self.sa2 = PointNetSetAbstractionMsg(128, [0.2, 0.4, 0.8], [32, 64, 128], 320,[[64, 64, 128], [128, 128, 256], [128, 128, 256]])
+        self.sa3 = PointNetSetAbstraction(None, None, None, 640 + 3, [256, 512, 1024], True)
+        self.fc1 = nn.Linear(1024, 512)
+        self.bn1 = nn.InstanceNorm1d(512)
+        #self.drop1 = nn.Dropout(0.4)
+        self.fc2 = nn.Linear(512, 256)
+        self.bn2 = nn.InstanceNorm1d(256)
+        #self.drop2 = nn.Dropout(0.5)
+        self.fc3 = nn.Linear(256, num_class)
+        self.bn3 = nn.InstanceNorm1d(num_class)
+
+    def forward(self, xyz):
+        B, _, _ = xyz.shape
+        if self.normal_channel:
+            norm = xyz[:, 3:, :]
+            xyz = xyz[:, :3, :]
+        else:
+            norm = None
+        l1_xyz, l1_points = self.sa1(xyz, norm)
+        l2_xyz, l2_points = self.sa2(l1_xyz, l1_points)
+        l3_xyz, l3_points = self.sa3(l2_xyz, l2_points)
+        x = l3_points.view(B, 1024)
+        x = F.relu(self.bn1(self.fc1(x)))
+        x = F.relu(self.bn2(self.fc2(x)))
+        x = F.relu(self.bn3(self.fc3(x)))
+
+        return x
 
 class encoder_BN(nn.Module):
     def __init__(self):
@@ -20,12 +53,6 @@ class encoder_BN(nn.Module):
         self.conv3 = torch.nn.Conv1d(128, 1024, 1)
         self.fc1 = nn.Linear(1024, 512)
         self.fc2 = nn.Linear(512, 128)
-        
-        self.fc3 = nn.Linear(128, 64)
-        self.fc4 = nn.Linear(64, 32)
-        self.fc5 = nn.Linear(32, 16)
-        self.fc6 = nn.Linear(16, 8)
-        self.fc7 = nn.Linear(8, 3)
         
         self.relu = nn.ReLU()
         self.bn1 = nn.InstanceNorm1d(64)
@@ -59,7 +86,7 @@ class local_NIF(nn.Module):
         torch.nn.init.constant_(self.fc3.bias, 0.0)
         torch.nn.init.normal_(self.fc3.weight, 0.0, np.sqrt(2) / np.sqrt(512))
 
-        for i in range(7):
+        for i in range(10): #change it to 10
             fc4 = nn.Linear(512, 512)
             torch.nn.init.constant_(fc4.bias, 0.0)
             torch.nn.init.normal_(fc4.weight, 0.0, np.sqrt(2) / np.sqrt(512))
@@ -91,11 +118,11 @@ class local_NIF(nn.Module):
         return features, sdf
 
     def get_gradient(self, points_feature, input_points):
-        input_points.requires_grad_(True)
+        input_points.requires_grad = True
         features ,sdf = self.forward(points_feature, input_points)
         gradient = torch.autograd.grad(
             sdf,
-            input_points,
+            input_points,   
             torch.ones_like(sdf, requires_grad=False, device=sdf.device),
             create_graph=True,
             retain_graph=True,
@@ -106,22 +133,42 @@ class local_NIF(nn.Module):
         g_point = input_points - sdf * grad_norm
         return features ,g_point
 
+
 class SDF_Model(nn.Module):
-    def __init__(self):
+    def __init__(self,point_net_backbone):
         super(SDF_Model, self).__init__()
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.encoder = encoder_BN()
+        if point_net_backbone == 'pointnet':
+            self.encoder = encoder_BN()
+        else:
+            self.encoder = encoder_BN_2()
+        
         self.NIF = local_NIF()
 
     def forward(self, gt,noisy_points):
-        num_points = gt.shape[1]
+        num_points = noisy_points.shape[1]
         gt = torch.permute(gt, (0, 2, 1))
         pointnet_feature = self.encoder(gt)
+        pointnet_feature = pointnet_feature.unsqueeze(0)
+        pointnet_feature = torch.mean(pointnet_feature, dim=1, keepdim=True)
+        pointnet_feature = pointnet_feature.squeeze(1)
         point_feature = torch.tile(torch.unsqueeze(
             pointnet_feature, 1), [1, num_points, 1])
         features, g_point = self.NIF.get_gradient(point_feature, noisy_points)
         return features, g_point
 
+    def predict(self, gt,noisy_points):
+        num_points = noisy_points.shape[1]
+        gt = torch.permute(gt, (0, 2, 1))
+        pointnet_feature = self.encoder(gt)
+        pointnet_feature = pointnet_feature.unsqueeze(0)
+        pointnet_feature = torch.mean(pointnet_feature, dim=1, keepdim=True)
+        pointnet_feature = pointnet_feature.squeeze(1)
+        point_feature = torch.tile(torch.unsqueeze(
+            pointnet_feature, 1), [1, num_points, 1])
+        features, _ = self.NIF.forward(point_feature, noisy_points)
+        return features
+        
     def get_feature(self, point):
         point = torch.permute(point, (0, 2, 1))
         return self.encoder(point)
@@ -135,7 +182,7 @@ class SDF_Model(nn.Module):
 
         for p in self.NIF.parameters():
             p.requires_grad_(False)
-
+            
 def prepare_input(resolution):
     x1 = torch.FloatTensor(1, 500, 3)
     x2 = torch.FloatTensor(1, 500, 3)

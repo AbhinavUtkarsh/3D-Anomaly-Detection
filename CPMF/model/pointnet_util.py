@@ -116,7 +116,7 @@ def query_ball_point(radius, nsample, xyz, new_xyz):
 def project_to_org(idx, idx_table):
     return idx_table[idx]
     
-def sample_and_group(xyz, npoint, nsample, org_idx_table, radius=0.5, knn=True):
+def sample_and_group(xyz, npoint, nsample, radius=0.5, knn=True):
     """
     Input:
         xyz: input points position data, [B, N, 3]
@@ -127,7 +127,7 @@ def sample_and_group(xyz, npoint, nsample, org_idx_table, radius=0.5, knn=True):
     Return:
         grouped_xyz: sampled points position data, [B, npoint, nsample, 3]
         fps_idx: the index of center points 
-        org_idx_all: sampled pc corresponding to the original pc index
+       
     """
     fps_idx = farthest_point_sample(xyz, npoint) # [B, npoint]
     torch.cuda.empty_cache()
@@ -139,8 +139,8 @@ def sample_and_group(xyz, npoint, nsample, org_idx_table, radius=0.5, knn=True):
     else:
         idx = query_ball_point(radius, nsample, xyz, new_xyz)
     torch.cuda.empty_cache()
-    org_idx_all = project_to_org(idx, org_idx_table)
-    torch.cuda.empty_cache()
+
+
     grouped_xyz = index_points(xyz, idx) # [B, npoint, nsample, C]
     torch.cuda.empty_cache()
-    return grouped_xyz, org_idx_all
+    return grouped_xyz
