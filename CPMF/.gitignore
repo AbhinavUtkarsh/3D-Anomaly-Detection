@@ -136,6 +136,7 @@ checkpoint_pointnet2/*
 #output directories 
 output/
 experiments/
+checkpoint_pointnet/
 
 #IDE
 .idea/
