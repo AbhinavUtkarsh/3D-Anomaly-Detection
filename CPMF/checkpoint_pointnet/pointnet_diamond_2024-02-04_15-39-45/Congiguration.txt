@@ -1,0 +1,3 @@
+                       classes: ['diamond']
+                         epoch: 250
+                 learning_rate: 0.0001

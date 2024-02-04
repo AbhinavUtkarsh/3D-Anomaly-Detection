@@ -4,9 +4,8 @@ from data.real_ad_3d_cpmf import get_data_loader
 import torch
 from tqdm import tqdm
 from feature_extractors.cpmf_features import CPMF_Features
-import pandas as pd
 from data.real_ad_3d_cpmf import real_AD_3D_classes
-from train import Training, hyperparameters
+from train import Training
 
 class MultiViewPatchCore():
     def __init__(self, backbone_name, dataset_path, n_views, no_fpfh, point_net_backbone, class_name, root_dir, exp_name, plot_use_rgb, image_size=224):
@@ -19,7 +18,7 @@ class MultiViewPatchCore():
         self.csv_path = os.path.join(self.csv_dir, f'{exp_name}.csv')
         self.plot_use_rgb = plot_use_rgb
         if point_net_backbone is not None:
-            self.model = Training(hyperparameters, class_name,point_net_backbone=point_net_backbone)
+            self.model = Training(hyperparameters=None, class_=class_name, point_net_backbone=point_net_backbone)
         else:
             self.model = None
 

@@ -5,10 +5,9 @@ def run_3d_ads(args):
     cls = args.category
     backbone_name = args.backbone
 
-    
     if args.use_pointnet:
         point_net_backbone = 'pointnet'
-        checkpoint_name = "/mnt/d/Project/cpmf_git/3D-Anomaly-Detection/CPMF/checkpoint_pointnet2/2024-02-04_13-57-28-pointnet/checkpoint_diamond_50.pth"
+        checkpoint_name = f"./checkpoint_pointnet/{point_net_backbone}_{cls}_2024-02-04_15-39-45/checkpoint_{cls}_0.pth"
     elif args.use_pointnet2:
         point_net_backbone = 'pointnet2'
         checkpoint_name = None
@@ -39,7 +38,7 @@ def str2bool(v):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--data-path', type=str, default='/mnt/d/Project/cpmf_git/3D-Anomaly-Detection/CPMF/datasets/Real_AD_3D_multi_view')
+    parser.add_argument('--data-path', type=str, default='./datasets/Real_AD_3D_multi_view')
     parser.add_argument('--n-views', type=int, default=1)
     parser.add_argument('--no-fpfh', type=str2bool, default=False)
     parser.add_argument("--use-pointnet", type=str2bool, default=True)
