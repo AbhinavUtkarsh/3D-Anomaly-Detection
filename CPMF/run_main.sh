@@ -1,4 +1,4 @@
-data_dir=./datasets/Real_AD_3D_multiview/
+data_dir=./datasets/Real_AD_3D_multi_view/
 exp_name="Testrun"
 
 # run with ResNet backbone

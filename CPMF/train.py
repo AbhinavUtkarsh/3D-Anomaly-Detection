@@ -68,7 +68,6 @@ class Training():
                     
                     # Then, you can convert the noisy_points back to a PyTorch tensor and move it to the CUDA device
                     noisy_points = torch.from_numpy(noisy_points).to(torch.float32).to(self.device)
-                    
                     noisy_points = noisy_points.unsqueeze(0)
                     point_feature, g_point = self.sdf_model(patches,noisy_points)
 
@@ -111,7 +110,10 @@ class Training():
         noisy_points = noisy_points.unsqueeze(0)
         points = points.to(self.device)
         noisy_points = noisy_points.to(self.device)
-        point_feature, g_point = self.sdf_model(points, noisy_points)
+        patches = sample_and_group(points, npoint=64, nsample=500)
+        patches = patches.squeeze(0)
+        patches = patches.to(self.device)
+        point_feature, g_point = self.sdf_model(patches, noisy_points)
         point_feature = point_feature.squeeze(0)
         return point_feature
     
@@ -121,7 +123,10 @@ class Training():
         noisy_points = noisy_points.unsqueeze(0)
         points = points.to(self.device)
         noisy_points = noisy_points.to(self.device)
-        point_feature = self.sdf_model.predict(points, noisy_points)
+        patches = sample_and_group(points, npoint=64, nsample=500)
+        patches = patches.squeeze(0)
+        patches = patches.to(self.device)
+        point_feature = self.sdf_model.predict(patches, noisy_points)
         point_feature = point_feature.squeeze(0)
         return point_feature
 
@@ -131,10 +136,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--ckpt_path', type=str, default="./checkpoint_pointnet")
     parser.add_argument('--threed_backbone', type=str, default='pointnet')
-    parser.add_argument('--category', type=str, default="diamond")
-    parser.add_argument('--epoch', type=int, default=250)
+    parser.add_argument('--category', type=str, default="all")
+    parser.add_argument('--epoch', type=int, default=300)
     parser.add_argument('--learning_rate', type=int, default=0.0001)
-    parser.add_argument('--dataset_path', type=str, default='./datasets/Real_AD_3D_multiview/')
+    parser.add_argument('--dataset_path', type=str, default='./datasets/Real_AD_3D_multi_view/')
 
     # trained on single GPU
     cuda_idx = str(0)
@@ -142,8 +147,14 @@ if __name__ == "__main__":
     os.environ["CUDA_VISIBLE_DEVICES"] = cuda_idx
 
     classes = os.listdir(parser.parse_args().dataset_path)
-    # classes = ["airplane","candybar","car","chicken","diamond","duck"]
+    # classes = ["airplane","candybar","car","chicken","diamond","duck", "shell", "gemstone", "toffee"]
 
+    #filtering based on parser category
+    if parser.parse_args().category == "all":
+        classes = classes
+    else:
+        classes = [parser.parse_args().category]
+        
     parameter_dict = parser.parse_args()
     pointnet_version = parameter_dict.threed_backbone
     hyperparameters = {

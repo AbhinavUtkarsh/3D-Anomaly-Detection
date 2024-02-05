@@ -137,6 +137,7 @@ checkpoint_pointnet2/*
 output/
 experiments/
 checkpoint_pointnet/
+checkpoint_pointnet2/
 
 #IDE
 .idea/
