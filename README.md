@@ -11,7 +11,7 @@ Base paper rankings as of 2024-02-07
 
 
 ## Introduction
-We are a team of four pursuing our Master of Science at the Technical University of Munich. This project work involved choosing a recently published research in domain of 3D anomaly detection. Hence, we took up the base CPMF paper, and added a few modifications to it´s pipeline. Some of the modifications have  been inspired from [Shape-Guided](https://openreview.net/pdf?id=IkSGn9fcPz) and [Neural-Pull](https://arxiv.org/pdf/2011.13495.pdf).
+We are a team of four pursuing our Master of Science at the Technical University of Munich. This project work involved choosing a recently published research in domain of 3D anomaly detection. Hence, we took up the base CPMF paper, and added a few modifications to its pipeline. Some of the modifications have  been inspired by [Shape-Guided](https://openreview.net/pdf?id=IkSGn9fcPz) and [Neural-Pull](https://arxiv.org/pdf/2011.13495.pdf).
 
 
 
@@ -19,7 +19,7 @@ We are a team of four pursuing our Master of Science at the Technical University
 Notable steps in the base CPMF point cloud anomaly detections follows:
 1. The high-resolution point cloud is downsampled to 224 × 224 × 3 to match the resolution of the multi-view images.
 
-2. The downsampled point cloud is utilized to generate twenty-seven multi-view images of 224 × 224 resolution. A visualization example can be seen in figure 2 in our report.
+2. The downsampled point cloud is utilized to generate twenty-seven multi-view images of 224 × 224 resolution. A visualization example can be seen in Figure 2 in our report.
 
 3. These multi-view images are then processed through a pretrained ResNet network, which outputs a complementary feature vector for every point in the downsampled point cloud.
 
@@ -36,13 +36,13 @@ Below, we detail the significant enhancements introduced to the base CPMF networ
 1. Introduction of PointNet and PointNet++ for preliminary 3D modality feature extraction, marking a shift towards deep learning techniques.
 2. Deployment of a super-resolution Signed Distance Field (SDF) Network to refine the extraction of 3D features, enhancing the network’s spatial understanding.
 
-3. Integration of a noising and patching process, devised to enrich the learning of local geometries within high resolution point clouds.
+3. Integration of a noising and patching process, devised to enrich the learning of local geometries within high-resolution point clouds.
 
 4. Reworking of the final feature aggregation module, enabling a three-stage rich feature fusion.
 
-5. Substitution of the pre-trained ResNet 2D backbone with NasNet, selected for its superior performance in anomaly detection contexts.
+5. Substitution of the pretrained ResNet 2D backbone with NasNet, selected for its superior performance in anomaly detection contexts.
 
-For more details regarding the implementation here is our [report]().
+For more details regarding the implementation, here is our [report]().
 ## Cloning & Setup
 
 1.  Clone our GitHub repo:
@@ -62,7 +62,7 @@ sh init.sh
 ```bash
 RealAD dataset : https://drive.google.com/file/d/1S3ul2qNNSiV_JZmhPj_-U0ZbO2TdVN30/view?usp=sharing
 RealAD-3D Multiview Dataset : https://drive.google.com/file/d/10SbU9AKNQQyIlT5Q0MkvRaUlhvxHpiry/view?usp=sharing
-Pre-trained Checkpoints : https://drive.google.com/file/d/1FTcZnUkwrL8H--xBFQY2z3esVCuwR_ZX/view?usp=sharing
+Pretrained Checkpoints : https://drive.google.com/file/d/1FTcZnUkwrL8H--xBFQY2z3esVCuwR_ZX/view?usp=sharing
 ```
 Note: [RealAD-3D dataset](https://github.com/M-3LAB/Real3D-AD) needed extensive preprocessing for the current pipeline, the details can be seen in  [report]().
 
@@ -93,7 +93,7 @@ sh preprocess_dataset.sh
 ```
 
 ## Training
-If you downloaded the pretrained model checkpoints in the cloning & stepup step, skip this step.
+If you downloaded the pretrained model checkpoints in the cloning & setup step, skip this step.
 
 1. Training the Pointnet & SDF Network for every class:
 ```bash
@@ -112,13 +112,13 @@ sh run_main.sh.sh
 ```
 
 Note : 
-- Large amount if CPU RAM is required to run this step with default 2D backbone, switch to ResNet if low on memory. Furthermore, Linux users can create a SWAP file to increase the CPU memory.
+- Large amount of CPU RAM is required to run this step with the default 2D backbone, switch to ResNet if low on memory. Furthermore, Linux users can create a SWAP file to increase the CPU memory.
 - Metrics would be stored by default in results/csv/deafult.csv
 
 
 ## Results
 
-![Metrics](3D-Anomaly-Detection/CPMF/results/results.png)
+![Metrics](3D-Anomaly-Detection/CPMF/utils/results.png)
 
 ## Team
 This project work spanned over five weeks in a team of four:
