@@ -4,7 +4,7 @@ export DISPLAY=:0
 cd utils
 
 # remove the background (commented because diamond class already preprocessed)
-# python preprocessing.py --dataset_path $data_dir
+python preprocessing.py --dataset_path $data_dir
 
 
 python generate_multi_view_dataset.py --dataset_path $data_dir --color-option UNIFORM --category airplane --save-dir $save_dir
