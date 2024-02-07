@@ -48,7 +48,7 @@ if __name__ == '__main__':
     parser.add_argument('--category', type=str, default='diamond')
     parser.add_argument('--root-dir', type=str, default='./results')
     parser.add_argument('--backbone', type=str, default='resnet18')
-    parser.add_argument('--draw', type=str2bool, default=True)
+    parser.add_argument('--draw', type=str2bool, default=False)
 
     args = parser.parse_args()  
     
