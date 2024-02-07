@@ -1,5 +1,5 @@
 
-# Enhanced:  Complementary Pseudo Multimodal Feature for Point Cloud Anomaly Detection as a project work in Machine Learning for 3D Geometry [(TUM WS23/24)]()
+# Enhanced:  Complementary Pseudo Multimodal Feature for Point Cloud Anomaly Detection as a project work in Machine Learning for 3D Geometry [(TUM WS23/24)](https://drive.google.com/file/d/1onQ9-69kLbpYJzAUucd1hnJOCu5J2Ge6/view)
 ### [Base Paper:](https://arxiv.org/abs/2303.13194)
 Base paper rankings as of 2024-02-07
 
@@ -42,7 +42,7 @@ Below, we detail the significant enhancements introduced to the base CPMF networ
 
 5. Substitution of the pretrained ResNet 2D backbone with NasNet, selected for its superior performance in anomaly detection contexts.
 
-For more details regarding the implementation, here is our [report]().
+For more details regarding the implementation, here is our [report](https://drive.google.com/file/d/1onQ9-69kLbpYJzAUucd1hnJOCu5J2Ge6/view).
 ## Cloning & Setup
 
 1.  Clone our GitHub repo:
@@ -64,7 +64,7 @@ RealAD dataset : https://drive.google.com/file/d/1S3ul2qNNSiV_JZmhPj_-U0ZbO2TdVN
 RealAD-3D Multiview Dataset : https://drive.google.com/file/d/10SbU9AKNQQyIlT5Q0MkvRaUlhvxHpiry/view?usp=sharing
 Pretrained Checkpoints : https://drive.google.com/file/d/1FTcZnUkwrL8H--xBFQY2z3esVCuwR_ZX/view?usp=sharing
 ```
-Note: [RealAD-3D dataset](https://github.com/M-3LAB/Real3D-AD) needed extensive preprocessing for the current pipeline, the details can be seen in  [report]().
+Note: [RealAD-3D dataset](https://github.com/M-3LAB/Real3D-AD) needed extensive preprocessing for the current pipeline, the details can be seen in  [report](https://drive.google.com/file/d/1onQ9-69kLbpYJzAUucd1hnJOCu5J2Ge6/view).
 
 4. Extract the downloaded dataset, Multiview dataset and checkpoints in such file structure:
 ```bash
