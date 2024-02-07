@@ -118,7 +118,7 @@ Note :
 
 ## Results
 
-![Metrics](3D-Anomaly-Detection/CPMF/utils/results.png)
+        ![Metrics](CPMF/utils/results.png)
 
 ## Team
 This project work spanned over five weeks in a team of four:
