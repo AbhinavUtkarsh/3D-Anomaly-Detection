@@ -173,7 +173,7 @@ def plot_anomaly_score_distributions(scores:dict, ground_truths_list, save_folde
         ax.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
         ax.xaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
 
-        with plt.style.context(['science', 'ieee', 'no-latex']):
+        with plt.style.context(['ggplot', 'seaborn', 'fivethirtyeight']):
             sns.histplot(np.random.choice(normal_score, N_COUNT), color="green", bins=50, label='${d(p_n)}$',
                          stat='probability', alpha=.75)
             sns.histplot(np.random.choice(abnormal_score, N_COUNT), color="red", bins=50, label='${d(p_a)}$',
@@ -229,7 +229,7 @@ def visualize_feature(features, labels, legends, n_components=3, method='TSNE', 
     feat_proj = model.fit_transform(features)
     colors = ['g', 'r']
 
-    with plt.style.context(['science', 'ieee', 'no-latex']):
+    with plt.style.context(['ggplot', 'seaborn', 'fivethirtyeight']):
         if n_components == 2:
             ax = scatter_2d(feat_proj, labels, marker_size, colors)
         elif n_components == 3:

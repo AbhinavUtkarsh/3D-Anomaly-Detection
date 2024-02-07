@@ -70,7 +70,7 @@ class CPMF_Features(Features):
             concat_patch = torch.cat([view_invariant_features, sdf_feature_maps], dim=1)
         elif self.n_views > 0 and not self.no_fpfh and model is None:
             concat_patch = torch.cat([view_invariant_features, fpfh_feature_maps], dim=1)
-        elif self.n_views > 0 and not self.no_fpfh and model is not None:    
+        elif self.n_views > 0 and not self.no_fpfh and model is not None:   
             concat_patch = torch.cat([view_invariant_features, sdf_feature_maps, fpfh_feature_maps], dim=1)
         else:
             concat_patch = sdf_feature_maps

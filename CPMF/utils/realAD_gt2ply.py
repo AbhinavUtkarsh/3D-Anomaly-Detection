@@ -1,6 +1,6 @@
 """
 Script1: realAD_gt2ply.py
-This script is used to convert the ground truth .txt files to .ply files that can be unsed in blender for conversion to view and .tiffs
+This script is used to convert the ground truth .txt files to .ply files that can be used in blender for conversion to view and .tiffs
 """
 
 import os

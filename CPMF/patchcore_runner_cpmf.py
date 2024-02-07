@@ -28,8 +28,8 @@ class MultiViewPatchCore():
     def fit(self,checkpoint_name): 
         print("checkpoint_name: ",checkpoint_name)    
         class_name = self.class_name
-
-        self.model.load_checkpoint(checkpoint_name)
+        if self.model is not None:
+            self.model.load_checkpoint(checkpoint_name)
 
         train_loader = get_data_loader("train", class_name=class_name, img_size=self.image_size, dataset_path=self.dataset_path)
         for sample, _, _ in tqdm(train_loader, desc=f'Extracting train features for class {class_name}'):
@@ -41,7 +41,9 @@ class MultiViewPatchCore():
     def evaluate(self, checkpoint_name, draw=False):
         class_name = self.class_name
 
-        self.model.load_checkpoint(checkpoint_name)
+        if self.model is not None:
+            self.model.load_checkpoint(checkpoint_name)
+            
         test_loader = get_data_loader("test", class_name=class_name, img_size=self.image_size, dataset_path=self.dataset_path)
         with torch.no_grad():
             for sample, mask, label in tqdm(test_loader, desc=f'Extracting test features for class {class_name}'):

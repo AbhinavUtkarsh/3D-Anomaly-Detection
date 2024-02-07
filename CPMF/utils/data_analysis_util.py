@@ -121,7 +121,7 @@ def plot_single_backbone_result(df: pd.DataFrame, save_path=None):
     ax1 = fig.add_subplot()
     ax1.tick_params(labelsize=fontsize)
 
-    with plt.style.context(['science', 'ieee', 'no-latex']):
+    with plt.style.context(['ggplot', 'seaborn', 'fivethirtyeight']):
         # plot I-AUROC in the first axes
         legend_list = []
         for k in keys:
