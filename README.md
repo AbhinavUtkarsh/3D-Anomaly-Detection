@@ -40,7 +40,7 @@ Below, we detail the significant enhancements introduced to the base CPMF networ
 
 4. Reworking of the final feature aggregation module, enabling a three-stage rich feature fusion.
 
-5. Substitution of the pretrained ResNet 2D backbone with NasNet, selected for its superior performance in anomaly detection contexts.
+5. Substitution of the pretrained ResNet 2D backbone with NasNet, selected for its superior performance in imageNet-1k (which it is pretrained on).
 
 For more details regarding the implementation, here is our [report](https://drive.google.com/file/d/1onQ9-69kLbpYJzAUucd1hnJOCu5J2Ge6/view).
 ## Cloning & Setup
