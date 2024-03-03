@@ -47,7 +47,7 @@ For more details regarding the implementation, here is our [report](https://driv
 
 1.  Clone our GitHub repo:
 ```bash
-git https://github.com/MalazTamim/3D-Anomaly-Detection
+git https://github.com/AbhinavUtkarsh/3D-Anomaly-Detection
 cd 3D-Anomaly-Detection/CPMF
 ```
 
