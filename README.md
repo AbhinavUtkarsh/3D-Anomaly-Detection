@@ -123,10 +123,10 @@ Note :
 ## Team
 This project work spanned over five weeks in a team of four:
 
-Malaz Tamim : M.Sc. Data Engineering and Analytics
-
 Abhinav Utkarsh : M.Sc. Robotics, Cognition, Intelligence
 
 Matthias Pouleau : M.Sc. Robotics, Cognition, Intelligence
+
+Malaz : M.Sc. Data Engineering and Analytics
 
 Sayak Dutta : M.Sc. Robotics, Cognition, Intelligence
