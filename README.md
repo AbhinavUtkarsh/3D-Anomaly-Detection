@@ -47,7 +47,7 @@ For more details regarding the implementation, here is our [report](https://driv
 
 1.  Clone our GitHub repo:
 ```bash
-git https://github.com/AbhinavUtkarsh/3D-Anomaly-Detection
+git clone https://github.com/AbhinavUtkarsh/3D-Anomaly-Detection
 cd 3D-Anomaly-Detection/CPMF
 ```
 
@@ -120,6 +120,10 @@ Note :
 
 ![Metrics](CPMF/utils/results.png)
 
+## Acknowledgements
+- Our 3D backbone architecture draws significant inspiration and implementation from the Shape-Guided model and its SDF and encoder network, as proposed by Yu-Min Chu, Chieh Liu, Ting-I Hsieh, Hwann-Tzong Chen, and Tyng-Luh Liu in their research [Shape-Guided](https://openreview.net/pdf?id=IkSGn9fcPz). We encourage users of this repository to familiarize themselves with and recognize this original research contribution.
+- We express our gratitude to Jiaqi Liu, Guoyang Xie, Ruitao Chen, Xinpeng Li, Jinbao Wang†, Yong Liu, Chengjie Wang, and Feng Zheng for the [RealAD-3D dataset](https://github.com/M-3LAB/Real3D-AD). This dataset was instrumental in the research conducted for this project.
+
 ## Team
 This project work spanned over five weeks in a team of four:
 
@@ -127,6 +131,6 @@ Abhinav Utkarsh : M.Sc. Robotics, Cognition, Intelligence
 
 Matthias Pouleau : M.Sc. Robotics, Cognition, Intelligence
 
-Malaz : M.Sc. Data Engineering and Analytics
+Malaz Tamim: M.Sc. Data Engineering and Analytics
 
 Sayak Dutta : M.Sc. Robotics, Cognition, Intelligence

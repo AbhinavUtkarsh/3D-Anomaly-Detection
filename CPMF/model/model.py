@@ -1,3 +1,10 @@
+"""
+This 3D backbone architecture draws significant inspiration and implementation from the 
+Shape-Guided model by Yu-Min Chu, Chieh Liu, Ting-I Hsieh, Hwann-Tzong Chen, and Tyng-Luh Liu.
+See their research here: https://openreview.net/pdf?id=IkSGn9fcPz
+We encourage users to consult the original work: https://github.com/jayliu0313/Shape-Guided/blob/main/core/model.py 
+"""
+
 import numpy as np
 import torch
 from torch.autograd import Variable
